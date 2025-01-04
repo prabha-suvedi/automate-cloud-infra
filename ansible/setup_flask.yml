@@ -1,0 +1,23 @@
+---
+- name: Set up Flask on EC2 instance
+  hosts: webservers
+  become: yes
+  tasks:
+    - name: Install Python3 and pip
+      apt:
+        name:
+          - python3
+          - python3-pip
+        state: present
+
+    - name: Install Flask
+      pip:
+        name: flask
+
+    - name: Copy Flask app code
+      copy:
+        src: flask_app.py
+        dest: /home/ubuntu/flask_app.py
+
+    - name: Run Flask app
+      command: python3 /home/ubuntu/flask_app.py
