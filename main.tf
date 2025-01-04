@@ -28,7 +28,7 @@ resource "aws_route_table" "main_route_table" {
 
   # Route to the internet via the Internet Gateway
   route {
-    cidr_block = "0.0.0.0/0" # Allow all traffic to the internet
+    cidr_block = "0.0.0.0/0" 
     gateway_id = aws_internet_gateway.main_igw.id
   }
 
@@ -41,7 +41,7 @@ resource "aws_route_table" "main_route_table" {
 resource "aws_subnet" "main_subnet" {
   vpc_id     = aws_vpc.main_vpc.id
   cidr_block = "10.0.1.0/24"
-  availability_zone = "eu-north-1a"  # Change this to a valid AZ
+  availability_zone = "eu-north-1a"  
   map_public_ip_on_launch = true
   tags = {
     Name = "Main Subnet"
@@ -58,33 +58,31 @@ resource "aws_route_table_association" "main_subnet_association" {
 resource "aws_security_group" "example_sg" {
   name        = "example-security-group"
   description = "Allow HTTP, HTTPS, and SSH traffic"
-  vpc_id      = aws_vpc.main_vpc.id # Reference the created VPC
-
+  vpc_id      = aws_vpc.main_vpc.id 
   ingress {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # Allow SSH from any IP
+    cidr_blocks = ["0.0.0.0/0"] 
   }
 
   ingress {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # Allow HTTP from any IP
-  }
+    cidr_blocks = ["0.0.0.0/0"] 
 
   ingress {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # Allow HTTPS from any IP
+    cidr_blocks = ["0.0.0.0/0"] 
   }
 
   egress {
     from_port   = 0
     to_port     = 0
-    protocol    = "-1" # Allow all outbound traffic
+    protocol    = "-1" 
     cidr_blocks = ["0.0.0.0/0"]
   }
 
@@ -95,10 +93,9 @@ resource "aws_security_group" "example_sg" {
 
 
 resource "aws_network_interface" "example_eni" {
-  subnet_id       = aws_subnet.main_subnet.id          # Reference to the subnet where this ENI will be created
-  private_ips     = ["10.0.1.10"]                      # Assign a private IP address within the subnet CIDR range
-  security_groups = [aws_security_group.example_sg.id] # Attach the security group
-
+  subnet_id       = aws_subnet.main_subnet.id          
+  private_ips     = ["10.0.1.10"]                      
+  security_groups = [aws_security_group.example_sg.id] 
   tags = {
     Name = "ExampleNetworkInterface"
   }
@@ -106,7 +103,7 @@ resource "aws_network_interface" "example_eni" {
 
 
 resource "aws_eip" "example_eip" {
-  domain = "vpc" # This is the correct way to specify that the EIP is for a VPC
+  domain = "vpc" 
 
   tags = {
     Name = "ExampleElasticIP"
@@ -116,20 +113,20 @@ resource "aws_eip" "example_eip" {
 
 
 resource "aws_network_interface_attachment" "eni_attachment" {
-  instance_id          = aws_instance.example_instance.id # Use instance_id to ensure attachment
+  instance_id          = aws_instance.example_instance.id 
   network_interface_id = aws_network_interface.example_eni.id
   device_index         = 0
 }
 
 
 resource "aws_instance" "example_instance" {
-  ami           = "ami-02df5cb5ad97983ba" # Replace with a valid AMI ID
+  ami           = "ami-02df5cb5ad97983ba" 
   instance_type = "t3.micro"
 
   
   network_interface {
     network_interface_id = aws_network_interface.example_eni.id
-    device_index         = 1 # Always 0 for the primary network interface
+    device_index         = 1 
   }
 
   tags = {
