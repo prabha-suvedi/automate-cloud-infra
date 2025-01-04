@@ -1,6 +1,5 @@
 provider "aws" {
-  region = "eu-north-1" # Specify the AWS region
-  # Do not hardcode credentials. Use environment variables or IAM roles for access
+  region = "eu-north-1" 
 }
 
 
